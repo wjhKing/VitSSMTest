@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.lesson.modelInfo.user.UserInfo;
 import com.vit.common.base.ApiDataResponse;
 import com.vit.common.base.BaseResponse;
 import com.vit.common.base.PageDataResponse;
@@ -31,11 +32,15 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Resource
     private CacheManager cacheManager;
+    @Resource
+    private com.lesson.api.userApi.UserService userDubboService;
 
     @Override
     public PageDataResponse<User> selectAllUser() {
         PageDataResponse<User> response = new PageDataResponse<User>();
         try {
+            String word = userDubboService.helloWord();
+            com.lesson.modelInfo.base.PageDataResponse<UserInfo> page = userDubboService.selectAllUser();
             List<User> list = cacheManager.getList("ALLUSER",User.class);
             response.setInfo("from cache");
             if (Checker.isNone(list)) {
